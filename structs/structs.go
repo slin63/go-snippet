@@ -4,7 +4,7 @@ import "strings"
 
 // Limits on how many lines we'll display
 const MaxLines = 10
-const Spacer = "------"
+const Spacer = "-----------------------"
 
 type Snippet struct {
 	Text        string
