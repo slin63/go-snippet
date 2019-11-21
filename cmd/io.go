@@ -9,12 +9,13 @@ import (
 	"log"
 	"os"
 	"os/user"
+	"strconv"
 	"strings"
 )
 
 const Store = ".gosnps"
 
-func ReadJSONBlob() structs.SnippetMap {
+func ReadSnippetsFromFile() structs.SnippetMap {
 	store := getStore()
 	var dat structs.SnippetMap
 
@@ -41,16 +42,13 @@ func ReadJSONBlob() structs.SnippetMap {
 	return dat
 }
 
-func WriteJSONBlob(newSnippet structs.Snippet, snippets structs.SnippetMap) structs.SnippetMap {
-	// Store Snippets with their text as their primary key
-	snippets[newSnippet.Text] = newSnippet
-
+func WriteSnippetMapToFile(snippets structs.SnippetMap) structs.SnippetMap {
 	store := getStore()
 	result, err := json.Marshal(snippets)
 	if err != nil {
 		log.Fatal(err)
 	}
-	os.Create(store)
+	// os.Create(store)
 	ioutil.WriteFile(store, result, 0644)
 	fmt.Println("Wrote to:", store)
 	return snippets
@@ -66,6 +64,18 @@ func PromptChoice(prompt string) bool {
 		break
 	}
 	return true
+}
+
+func PromptEnumerable(prompt string) int {
+	snr := bufio.NewScanner(os.Stdin)
+	fmt.Println(prompt)
+	for fmt.Print("> "); snr.Scan(); fmt.Print("> ") {
+		if choice, err := strconv.Atoi(strings.TrimSpace(snr.Text())); err == nil {
+			return choice
+		}
+		fmt.Println("Not a valid number.")
+	}
+	return -1
 }
 
 func getStore() string {

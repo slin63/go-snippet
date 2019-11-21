@@ -8,15 +8,15 @@ import (
 	"github.com/akamensky/argparse"
 )
 
+// rm /Users/sheanlin/.gosnps
+// cat /Users/sheanlin/.gosnps | jq .
+// go build main.go && ./main -i
+
 // Insert snippets and tag them
 // View recent snippets
 // View most commonly accessed snippets
 // Access snippets by a some short ID
 // Look up snippets using fuzzy search with tags
-
-// todo:
-// create separate .gosnpstats file to track access counts
-// (it'll just be [ snippet ID : count ] key value pairs)
 func main() {
 	parser := argparse.NewParser("SnippetStore", "Quickly store and lookup snippets")
 
@@ -35,6 +35,8 @@ func main() {
 		fmt.Println("recent")
 	case *new:
 		fmt.Println("new")
+	default:
+		cmd.Select()
 	}
 
 	// test, _ := clipboard.ReadAll()

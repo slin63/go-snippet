@@ -18,7 +18,7 @@ Would you like to replace it? (y/n)`
 
 func Insert() {
 	// Grab existing snippets
-	var snippets structs.SnippetMap = ReadJSONBlob()
+	var snippets structs.SnippetMap = ReadSnippetsFromFile()
 
 	tags := []string{}
 	text, err := clipboard.ReadAll()
@@ -41,7 +41,9 @@ func Insert() {
 	setTags(&tags)
 	newSnippet := *structs.NewSnippet(text, tags)
 
-	WriteJSONBlob(newSnippet, snippets)
+	// Write snippets to file
+	snippets.AddSnippet(&newSnippet)
+	WriteSnippetMapToFile(snippets)
 }
 
 func setTags(tags *[]string) {
