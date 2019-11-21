@@ -14,7 +14,7 @@ import (
 const tagInstructions = `Enter tags for this snippet.
 Submit a blank tag to finish.`
 const alreadyExists = `This snippet already exists.
-Would you like to replace it?`
+Would you like to replace it? (y/n)`
 
 func Insert() {
 	// Grab existing snippets
@@ -28,7 +28,9 @@ func Insert() {
 	text = strings.TrimSpace(text)
 
 	if _, contains := snippets[text]; contains {
-		fmt.Println(alreadyExists)
+		if !PromptChoice(alreadyExists) {
+			os.Exit(0)
+		}
 	}
 
 	// Display the successfully extracted snippet text
@@ -37,8 +39,6 @@ func Insert() {
 
 	// Prompt the user for tags
 	setTags(&tags)
-	fmt.Println(tags)
-
 	newSnippet := *structs.NewSnippet(text, tags)
 
 	WriteJSONBlob(newSnippet, snippets)
