@@ -24,9 +24,7 @@ func Select() {
 
 	// Grab selected snippet, update snippet access information
 	selectedSnippet := (*sortedSnippets)[selected-1]
-	fmt.Println(selectedSnippet.Text)
 	snippets.UpdateAccessFields(selectedSnippet.Text)
-	fmt.Println(selectedSnippet)
 
 	// Copy to clipboard
 	clipboard.WriteAll(selectedSnippet.Text)
@@ -39,7 +37,14 @@ func Select() {
 func displayEnumeratedSnippets(snippets *[]structs.Snippet) string {
 	var displayString = ""
 	for i, snippet := range *snippets {
-		displayString += fmt.Sprintf("%d.\n%s\n%s\n%s\n\n", i+1, structs.Spacer, snippet.Text, structs.Spacer)
+		displayString += fmt.Sprintf(
+			"%d. %s\n%s\n%s\n%s\n\n",
+			i+1,
+			snippet.Tags,
+			structs.Spacer,
+			snippet.Text,
+			structs.Spacer,
+		)
 	}
 	return displayString
 }

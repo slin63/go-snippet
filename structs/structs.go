@@ -47,7 +47,7 @@ func (s SnippetMap) UpdateAccessFields(text string) {
 	}
 	snippet.LastAccessed = time.Now()
 	snippet.AccessCount += 1
-
+	s[text] = snippet
 }
 
 // Custom sorting types
