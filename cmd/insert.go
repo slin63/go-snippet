@@ -13,29 +13,42 @@ import (
 
 const tagInstructions = `Enter tags for this snippet.
 Submit a blank tag to finish.`
+const alreadyExists = `This snippet already exists.
+Would you like to replace it?`
 
 func Insert() {
+	// Grab existing snippets
+	var snippets structs.SnippetMap = ReadJSONBlob()
+
 	tags := []string{}
 	text, err := clipboard.ReadAll()
 	if err != nil {
 		log.Fatal(err)
 	}
+	text = strings.TrimSpace(text)
+
+	if _, contains := snippets[text]; contains {
+		fmt.Println(alreadyExists)
+	}
 
 	// Display the successfully extracted snippet text
-	snippet := structs.Snippet{Text: strings.TrimSpace(text)}
 	fmt.Println("Received:")
-	fmt.Println(displayString(snippet))
+	fmt.Println(displayString(text))
 
 	// Prompt the user for tags
 	setTags(&tags)
 	fmt.Println(tags)
+
+	newSnippet := *structs.NewSnippet(text, tags)
+
+	WriteJSONBlob(newSnippet, snippets)
 }
 
 func setTags(tags *[]string) {
 	snr := bufio.NewScanner(os.Stdin)
 	fmt.Println(tagInstructions)
 	for fmt.Print("> "); snr.Scan(); fmt.Print("> ") {
-		tag := snr.Text()
+		tag := strings.TrimSpace(snr.Text())
 		if len(tag) == 0 {
 			break
 		}
@@ -43,24 +56,24 @@ func setTags(tags *[]string) {
 	}
 }
 
-func displayString(s structs.Snippet) string {
-	if s.Height() > structs.MaxLines {
+func displayString(s string) string {
+	if strings.Count(s, "\n") > structs.MaxLines {
 		return trim(s)
 	}
-	return fmt.Sprintf("%s\n%s\n%s", structs.Spacer, s.Text, structs.Spacer)
+	return fmt.Sprintf("%s\n%s\n%s", structs.Spacer, s, structs.Spacer)
 }
 
-func trim(s structs.Snippet) string {
+func trim(s string) string {
 	indices := []int{}
-	for i := 0; i <= len(s.Text) && len(indices) <= structs.MaxLines; i++ {
-		if s.Text[i] == '\n' {
+	for i := 0; i <= len(s) && len(indices) <= structs.MaxLines; i++ {
+		if s[i] == '\n' {
 			indices = append(indices, i)
 		}
 	}
 	return fmt.Sprintf(
 		"%s\n%s\n%s\n%s\n",
 		structs.Spacer,
-		s.Text[:indices[len(indices)-1]],
+		s[:indices[len(indices)-1]],
 		". . .",
 		structs.Spacer,
 	)

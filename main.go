@@ -14,6 +14,9 @@ import (
 // Access snippets by a some short ID
 // Look up snippets using fuzzy search with tags
 
+// todo:
+// create separate .gosnpstats file to track access counts
+// (it'll just be [ snippet ID : count ] key value pairs)
 func main() {
 	parser := argparse.NewParser("SnippetStore", "Quickly store and lookup snippets")
 

@@ -1,18 +1,27 @@
 package structs
 
-import "strings"
+import (
+	"strings"
+)
 
-// Limits on how many lines we'll display
+// Formatting
 const MaxLines = 10
 const Spacer = "-----------------------"
 
-type Snippet struct {
-	Text        string
-	Tags        []string
-	AccessCount int
-	Id          string
-	// length      int
+type SnippetMap map[string]Snippet
 
+// Unique identifier: Snippet.Text
+func NewSnippet(text string, tags []string) *Snippet {
+	return &Snippet{
+		Text: text,
+		Tags: tags,
+	}
+}
+
+type Snippet struct {
+	Text        string   `json:"text"`
+	Tags        []string `json:"tags"`
+	AccessCount int      `json:"access_count"`
 }
 
 // Return the number of lines in the snippet's text
